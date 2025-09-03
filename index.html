@@ -1,244 +1,72 @@
 <!doctype html>
 <html lang="de">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>420Forum.de — Tools & Community</title>
-  <meta name="description" content="Sammlung kostenloser Online-Tools für Grower – Stromkostenrechner, Cal/Mag-Rechner, Nährstoffrechner und mehr. Schnell, simpel und mobil nutzbar." />
-  <meta name="theme-color" content="#0b0f0e" />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E%F0%9F%8D%83%3C/text%3E%3C/svg%3E" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>420Forum.de — Online-Rechner</title>
+  <meta name="description" content="Kostenlose Online-Rechner für Grower: Stromkostenrechner, Cal/Mag-Rechner, Nährstoffrechner und mehr — direkt im Browser nutzbar." />
   <style>
-    :root {
-      --bg: #0b0f0e;
-      --bg2: #0e1513;
-      --panel: #111716;
-      --text: #e8f5e9;
-      --muted: #a8b3ad;
-      --accent: #37e57c;
-      --accent-2: #9af7b6;
-      --glow: rgba(55, 229, 124, 0.45);
-    }
-
-    * { box-sizing: border-box; }
-    html, body { height: 100%; }
-
     body {
+      font-family: Arial, sans-serif;
       margin: 0;
-      color: var(--text);
-      background: radial-gradient(1200px 700px at 50% 20%, var(--bg2), var(--bg));
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, 'Helvetica Neue', Arial, 'Apple Color Emoji', 'Segoe UI Emoji';
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      overflow-x: hidden;
+      padding: 0;
+      background: #111;
+      color: #eee;
     }
-
-    .container {
-      min-height: 100dvh;
-      display: grid;
-      place-items: center;
-      padding: clamp(16px, 3vw, 32px);
-    }
-
-    .hero {
-      position: relative;
-      width: min(1100px, 92vw);
-      aspect-ratio: 16/9;
-      display: grid;
-      place-items: center;
-      background: linear-gradient(180deg, rgba(17, 23, 22, 0.8), rgba(17, 23, 22, 0.4));
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 28px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.5), inset 0 0 80px rgba(0,0,0,0.25);
-      overflow: hidden;
-      isolation: isolate; /* keep blending inside */
-    }
-
-    /* Title */
-    .title {
-      position: relative;
-      z-index: 5;
+    header {
+      background: #222;
+      padding: 20px;
       text-align: center;
-      line-height: 1.05;
-      padding: 0 1rem;
-      user-select: none;
     }
-    .title h1 {
+    h1 {
       margin: 0;
-      font-size: clamp(42px, 9vw, 110px);
-      font-weight: 900;
-      letter-spacing: 0.02em;
-      background: conic-gradient(from 180deg at 50% 50%, var(--accent), var(--accent-2), var(--accent));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      filter: drop-shadow(0 0 14px var(--glow)) drop-shadow(0 0 28px rgba(55,229,124,0.16));
-      text-shadow: 0 0 1px rgba(255,255,255,0.08);
+      color: #37e57c;
     }
-    .title p {
-      margin: 10px auto 0;
-      max-width: 60ch;
-      color: var(--muted);
-      font-size: clamp(14px, 2.2vw, 18px);
-    }
-
-    /* Smoke effect */
-    .smoke {
-      position: absolute;
-      inset: 0;
+    main {
       display: grid;
-      place-items: end center;
-      pointer-events: none;
-      z-index: 1;
-      mix-blend-mode: screen;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      padding: 20px;
     }
-    .smoke-stack {
-      position: relative;
-      width: min(60vw, 520px);
-      height: min(50vh, 360px);
-      filter: blur(10px) contrast(110%);
+    .widget {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
     }
-    .puff {
-      position: absolute;
-      left: 50%;
-      bottom: 0;
-      width: 120px;
-      height: 120px;
-      transform: translateX(-50%) translateY(0) scale(0.6);
-      opacity: 0;
-      border-radius: 50%;
-      background:
-        radial-gradient(closest-side, rgba(255,255,255,0.22), rgba(255,255,255,0.05) 70%, rgba(255,255,255,0) 72%),
-        radial-gradient(closest-side at 70% 30%, rgba(255,255,255,0.18), rgba(255,255,255,0));
-      animation: rise linear infinite;
+    .widget h2 {
+      margin-top: 0;
+      color: #9af7b6;
     }
-    @keyframes rise {
-      0%   { transform: translateX(-50%) translateY(0) scale(0.6); opacity: 0; }
-      8%   { opacity: 0.28; }
-      60%  { opacity: 0.22; }
-      100% { transform: translateX(-50%) translateY(-120%) scale(1.8); opacity: 0; }
-    }
-
-    /* Offset, drift & timing per puff */
-    .puff:nth-child(1)  { width:140px; height:140px; animation-duration: 8.5s; animation-delay: 0s;   --dx:-24px; }
-    .puff:nth-child(2)  { width:110px; height:110px; animation-duration: 7.7s; animation-delay: 1.2s; --dx:18px; }
-    .puff:nth-child(3)  { width:150px; height:150px; animation-duration: 9.4s; animation-delay: 2.1s; --dx:-8px; }
-    .puff:nth-child(4)  { width:120px; height:120px; animation-duration: 8.1s; animation-delay: 3.2s; --dx:26px; }
-    .puff:nth-child(5)  { width:170px; height:170px; animation-duration: 10.6s;animation-delay: 4.0s; --dx:-18px; }
-    .puff:nth-child(6)  { width:130px; height:130px; animation-duration: 8.9s; animation-delay: 5.1s; --dx:12px; }
-    .puff:nth-child(7)  { width:160px; height:160px; animation-duration: 10.2s;animation-delay: 6.0s; --dx:-28px; }
-    .puff:nth-child(8)  { width:120px; height:120px; animation-duration: 8.0s; animation-delay: 7.0s; --dx:22px; }
-    .puff:nth-child(9)  { width:140px; height:140px; animation-duration: 9.0s; animation-delay: 7.8s; --dx:-14px; }
-    .puff:nth-child(10) { width:180px; height:180px; animation-duration: 11.2s;animation-delay: 8.6s; --dx:10px; }
-
-    .puff { /* side-to-side drift */
-      animation-name: rise, sway;
-    }
-    @keyframes sway {
-      0%   { transform: translateX(calc(-50% + 0px))    translateY(0)        scale(0.6); }
-      40%  { transform: translateX(calc(-50% + var(--dx))) translateY(-55%)   scale(1.2); }
-      100% { transform: translateX(calc(-50% + calc(var(--dx) * 1.2))) translateY(-120%) scale(1.8); }
-    }
-
-    /* soft neon grid accents */
-    .glow-grid::before {
-      content: "";
-      position: absolute; inset: 0;
-      background:
-        radial-gradient(600px 260px at 50% 90%, rgba(55,229,124,0.08), transparent 60%),
-        radial-gradient(300px 200px at 10% 10%, rgba(154,247,182,0.06), transparent 50%),
-        radial-gradient(400px 220px at 90% 20%, rgba(55,229,124,0.05), transparent 60%);
-      pointer-events: none;
-      z-index: 0;
-      filter: blur(2px);
-    }
-
-    /* CTA panel */
-    .panel {
-      position: relative;
-      z-index: 6;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-top: 20px;
-      padding: 10px 12px;
-      background: rgba(11, 15, 14, 0.55);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 16px;
-      backdrop-filter: blur(8px) saturate(110%);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
-    }
-    .btn {
-      --btn-bg: linear-gradient(180deg, rgba(55,229,124,0.16), rgba(55,229,124,0.12));
-      --btn-br: rgba(55,229,124,0.5);
-      cursor: pointer;
-      appearance: none;
-      border: 1px solid var(--btn-br);
-      background: var(--btn-bg);
-      color: var(--text);
-      padding: 10px 14px;
-      border-radius: 14px;
-      font-weight: 650;
-      text-decoration: none;
-      transition: transform .15s ease, box-shadow .15s ease, background .2s ease;
-      box-shadow: 0 4px 14px rgba(55,229,124,0.18);
-    }
-    .btn:hover { transform: translateY(-1px); box-shadow: 0 8px 22px rgba(55,229,124,0.28); }
-    .btn:active { transform: translateY(0); }
-
-    footer {
-      margin-top: 28px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    /* Accessibility: reduce motion */
-    @media (prefers-reduced-motion: reduce) {
-      .puff { animation: none; opacity: .1; }
+    iframe {
+      width: 100%;
+      height: 400px;
+      border: none;
+      border-radius: 8px;
+      background: #fff;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <section class="hero glow-grid" aria-label="420Forum.de Hero">
-      <!-- Smoke layer -->
-      <div class="smoke" aria-hidden="true">
-        <div class="smoke-stack">
-          <div class="puff"></div>
-          <div class="puff"></div>
-          <div class="puff"></div>
-          <div class="puff"></div>
-          <div class="puff"></div>
-          <div class="puff"></div>
-          <div class="puff"></div>
-          <div class="puff"></div>
-          <div class="puff"></div>
-          <div class="puff"></div>
-        </div>
-      </div>
+  <header>
+    <h1>420Forum.de — Online-Rechner</h1>
+    <p>Praktische Tools direkt im Browser</p>
+  </header>
 
-      <!-- Title -->
-      <div class="title">
-        <h1>420Forum.de</h1>
-        <p>Coole Tools & eine entspannte Community rund um Anbau, Wissen und gute Vibes.</p>
-        <div class="panel" role="navigation" aria-label="Schnellzugriff auf Tools">
-          <a class="btn" href="#stromrechner">⚡ Stromrechner</a>
-          <a class="btn" href="#calmag">🧪 Cal/Mag-Rechner</a>
-          <a class="btn" href="#naehrstoffe">🌱 Nährstoff-Rechner</a>
-          <a class="btn" href="#mehr">➕ Weitere Tools</a>
-        </div>
-      </div>
-    </section>
-
-    <footer>
-      <span>© <span id="y"></span> 420Forum.de — Cannabis Anbau Forum für Growerinnen..</span>
-    </footer>
-  </div>
-
-  <script>
-    // Current year in footer
-    document.getElementById('y').textContent = new Date().getFullYear();
-  </script>
+  <main>
+    <div class="widget">
+      <h2>⚡ Stromkostenrechner</h2>
+      <iframe src="./stromrechner.html"></iframe>
+    </div>
+    <div class="widget">
+      <h2>🧪 Cal/Mag-Rechner</h2>
+      <iframe src="./calmag.html"></iframe>
+    </div>
+    <div class="widget">
+      <h2>🌱 Nährstoff-Rechner</h2>
+      <iframe src="./naehrstoffe.html"></iframe>
+    </div>
+  </main>
 </body>
 </html>
