@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>⚡ Stromkostenrechner — 420Forum.de</title>
+<style>
+body { font-family: Arial, sans-serif; background:#111; color:#eee; padding:20px; }
+h1 { color:#37e57c; }
+label { display:block; margin-top:10px; }
+input { width:100%; padding:8px; border-radius:6px; border:1px solid #333; margin-top:5px; background:#1a1a1a; color:#eee; }
+button { margin-top:15px; padding:10px; width:100%; border:none; border-radius:6px; background:#37e57c; color:#000; font-weight:bold; }
+.result { margin-top:15px; padding:10px; background:#1a1a1a; border-radius:6px; }
+</style>
+</head>
+<body>
+<h1>⚡ Stromkostenrechner</h1>
+<label>Leistung deiner Lampe (Watt):</label>
+<input type="number" id="watt" placeholder="z. B. 400">
+
+<label>Stunden pro Tag:</label>
+<input type="number" id="stunden" placeholder="z. B. 18">
+
+<label>Preis pro kWh (€):</label>
+<input type="number" step="0.01" id="preis" placeholder="z. B. 0.35">
+
+<label>Tage:</label>
+<input type="number" id="tage" placeholder="z. B. 30">
+
+<button onclick="rechnen()">Berechnen</button>
+
+<div class="result" id="ausgabe"></div>
+
+<script>
+function rechnen(){
+  let watt = parseFloat(document.getElementById('watt').value) || 0;
+  let stunden = parseFloat(document.getElementById('stunden').value) || 0;
+  let preis = parseFloat(document.getElementById('preis').value) || 0;
+  let tage = parseFloat(document.getElementById('tage').value) || 0;
+  
+  let kWh = (watt * stunden * tage) / 1000;
+  let kosten = kWh * preis;
+
+  document.getElementById('ausgabe').innerHTML = 
+    `<b>Verbrauch:</b> ${kWh.toFixed(2)} kWh<br>` +
+    `<b>Kosten:</b> ${kosten.toFixed(2)} €`;
+}
+</script>
+</body>
+</html>
