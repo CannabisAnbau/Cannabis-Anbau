@@ -3,47 +3,86 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>⚡ Stromkostenrechner — 420Forum.de</title>
+<title>⚡ Advanced Stromkostenrechner — 420Forum.de</title>
 <style>
 body { font-family: Arial, sans-serif; background:#111; color:#eee; padding:20px; }
-h1 { color:#37e57c; }
-label { display:block; margin-top:10px; }
-input { width:100%; padding:8px; border-radius:6px; border:1px solid #333; margin-top:5px; background:#1a1a1a; color:#eee; }
-button { margin-top:15px; padding:10px; width:100%; border:none; border-radius:6px; background:#37e57c; color:#000; font-weight:bold; }
-.result { margin-top:15px; padding:10px; background:#1a1a1a; border-radius:6px; }
+h1 { color:#37e57c; text-align:center; margin-bottom:20px; }
+.container { max-width:800px; margin:0 auto; }
+.device { background:#1a1a1a; border:1px solid #333; border-radius:10px; padding:12px; margin-bottom:12px; }
+.device label { display:block; margin-top:6px; }
+.device input, .device select { width:100%; padding:6px; margin-top:4px; border-radius:6px; border:1px solid #333; background:#0f1816; color:#eee; }
+button { padding:10px; width:100%; margin-top:12px; border:none; border-radius:6px; background:#37e57c; color:#000; font-weight:bold; cursor:pointer; }
+button:hover { opacity:0.9; }
+.result { margin-top:20px; padding:12px; background:#0f1816; border-radius:8px; }
 </style>
 </head>
 <body>
-<h1>⚡ Stromkostenrechner</h1>
-<label>Leistung deiner Lampe (Watt):</label>
-<input type="number" id="watt" placeholder="z. B. 400">
+<div class="container" id="devices-container">
+  <div class="device">
+    <label>Gerätename:</label>
+    <input type="text" placeholder="Lampe">
+    <label>Leistung (Watt):</label>
+    <input type="number" placeholder="400">
+    <label>Phase:</label>
+    <select>
+      <option value="veg">Veg (z.B. 18h/Tag)</option>
+      <option value="blüte">Blüte (z.B. 12h/Tag)</option>
+    </select>
+    <label>Tage:</label>
+    <input type="number" placeholder="30">
+  </div>
+</div>
 
-<label>Stunden pro Tag:</label>
-<input type="number" id="stunden" placeholder="z. B. 18">
+<button onclick="addDevice()">+ Gerät hinzufügen</button>
+<button onclick="calculate()">Berechnen</button>
 
-<label>Preis pro kWh (€):</label>
-<input type="number" step="0.01" id="preis" placeholder="z. B. 0.35">
-
-<label>Tage:</label>
-<input type="number" id="tage" placeholder="z. B. 30">
-
-<button onclick="rechnen()">Berechnen</button>
-
-<div class="result" id="ausgabe"></div>
+<div class="result" id="result"></div>
 
 <script>
-function rechnen(){
-  let watt = parseFloat(document.getElementById('watt').value) || 0;
-  let stunden = parseFloat(document.getElementById('stunden').value) || 0;
-  let preis = parseFloat(document.getElementById('preis').value) || 0;
-  let tage = parseFloat(document.getElementById('tage').value) || 0;
-  
-  let kWh = (watt * stunden * tage) / 1000;
-  let kosten = kWh * preis;
+function addDevice(){
+  const container = document.getElementById('devices-container');
+  const div = document.createElement('div');
+  div.className = 'device';
+  div.innerHTML = `
+    <label>Gerätename:</label>
+    <input type="text" placeholder="Lampe">
+    <label>Leistung (Watt):</label>
+    <input type="number" placeholder="400">
+    <label>Phase:</label>
+    <select>
+      <option value="veg">Veg (z.B. 18h/Tag)</option>
+      <option value="blüte">Blüte (z.B. 12h/Tag)</option>
+    </select>
+    <label>Tage:</label>
+    <input type="number" placeholder="30">
+  `;
+  container.appendChild(div);
+}
 
-  document.getElementById('ausgabe').innerHTML = 
-    `<b>Verbrauch:</b> ${kWh.toFixed(2)} kWh<br>` +
-    `<b>Kosten:</b> ${kosten.toFixed(2)} €`;
+function calculate(){
+  const devices = document.querySelectorAll('.device');
+  const kWhPreis = prompt('Bitte kWh Preis in € eingeben:', '0.35');
+  if(!kWhPreis) return;
+
+  let totalKWh = 0;
+  let output = '<h2>Ergebnis:</h2>';
+
+  devices.forEach((d,i)=>{
+    const name = d.querySelector('input[type="text"]').value || `Gerät ${i+1}`;
+    const watt = parseFloat(d.querySelector('input[type="number"]').value) || 0;
+    const phase = d.querySelector('select').value;
+    const tage = parseFloat(d.querySelectorAll('input[type="number"]')[1].value) || 0;
+    let stunden = (phase==='veg')?18:12;
+
+    const kWh = (watt * stunden * tage)/1000;
+    totalKWh += kWh;
+    const kosten = kWh * parseFloat(kWhPreis);
+
+    output += `<p><b>${name}:</b> ${kWh.toFixed(2)} kWh — ${kosten.toFixed(2)} €</p>`;
+  });
+
+  output += `<p><b>Gesamt:</b> ${totalKWh.toFixed(2)} kWh — ${(totalKWh*parseFloat(kWhPreis)).toFixed(2)} €</p>`;
+  document.getElementById('result').innerHTML = output;
 }
 </script>
 </body>
